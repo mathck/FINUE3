@@ -14,11 +14,15 @@ import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JSeparator;
 import java.awt.Canvas;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class Main {
 
 	private JFrame frmPortfoliooptimierungMitVerschiedenen;
 	private JTextField zinssatz;
+	private JTextField result_e;
+	private JTextField result_o;
 
 	/**
 	 * Launch the application.
@@ -70,7 +74,7 @@ public class Main {
 		lblStocks.setBounds(10, 11, 151, 29);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblStocks);
 		
-		JSlider gewichtung_slider = new JSlider();
+		final JSlider gewichtung_slider = new JSlider();
 		gewichtung_slider.setBounds(10, 449, 151, 26);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(gewichtung_slider);
 		
@@ -101,10 +105,10 @@ public class Main {
 		lblCash_1.setBounds(11, 320, 151, 29);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblCash_1);
 		
-		JLabel lblZinssatz = new JLabel("Zinssatz");
+		JLabel lblZinssatz = new JLabel("Zinssatz (%)");
 		lblZinssatz.setHorizontalAlignment(SwingConstants.LEFT);
 		lblZinssatz.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		lblZinssatz.setBounds(10, 352, 54, 17);
+		lblZinssatz.setBounds(10, 352, 151, 17);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblZinssatz);
 		
 		zinssatz = new JTextField();
@@ -117,13 +121,13 @@ public class Main {
 		separator.setBounds(0, 309, 171, 17);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(separator);
 		
-		JLabel gewichtung_stock = new JLabel("50%");
+		final JLabel gewichtung_stock = new JLabel("50%");
 		gewichtung_stock.setHorizontalAlignment(SwingConstants.LEFT);
 		gewichtung_stock.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		gewichtung_stock.setBounds(74, 486, 54, 17);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(gewichtung_stock);
 		
-		JLabel gewichtung_cash = new JLabel("50%");
+		final JLabel gewichtung_cash = new JLabel("50%");
 		gewichtung_cash.setHorizontalAlignment(SwingConstants.LEFT);
 		gewichtung_cash.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		gewichtung_cash.setBounds(74, 508, 54, 17);
@@ -143,14 +147,56 @@ public class Main {
 		separator_2.setBounds(0, 402, 171, 17);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(separator_2);
 		
-		JButton btnStart = new JButton("START");
-		btnStart.setFont(new Font("Open Sans", Font.BOLD, 22));
-		btnStart.setBounds(182, 451, 151, 74);
-		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(btnStart);
+		JButton button_start = new JButton("START");
+		button_start.setFont(new Font("Open Sans", Font.BOLD, 22));
+		button_start.setBounds(182, 451, 151, 74);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(button_start);
 		
 		Canvas canvas = new Canvas();
 		canvas.setBackground(SystemColor.inactiveCaption);
 		canvas.setBounds(183, 9, 585, 434);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(canvas);
+		
+		JLabel lblErwartetePortfoliorendite = new JLabel("Erwartete Portfoliorendite");
+		lblErwartetePortfoliorendite.setHorizontalAlignment(SwingConstants.LEFT);
+		lblErwartetePortfoliorendite.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		lblErwartetePortfoliorendite.setBounds(343, 478, 157, 20);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblErwartetePortfoliorendite);
+		
+		result_e = new JTextField();
+		result_e.setEditable(false);
+		result_e.setHorizontalAlignment(SwingConstants.CENTER);
+		result_e.setColumns(10);
+		result_e.setBounds(509, 478, 253, 20);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(result_e);
+		
+		JLabel lblPortfolioVolatilitt = new JLabel("Portfolio Volatilit\u00E4t");
+		lblPortfolioVolatilitt.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPortfolioVolatilitt.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		lblPortfolioVolatilitt.setBounds(343, 503, 157, 20);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblPortfolioVolatilitt);
+		
+		gewichtung_slider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = gewichtung_slider.getValue();
+				gewichtung_stock.setText(value + "%");
+				gewichtung_cash.setText(((value - 100) * -1) + "%");
+			}
+		});
+		
+		result_o = new JTextField();
+		result_o.setHorizontalAlignment(SwingConstants.CENTER);
+		result_o.setEditable(false);
+		result_o.setColumns(10);
+		result_o.setBounds(509, 503, 253, 20);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(result_o);
+		
+		JLabel lblPortfolio = new JLabel("Portfolio");
+		lblPortfolio.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPortfolio.setForeground(SystemColor.textHighlight);
+		lblPortfolio.setFont(new Font("Open Sans", Font.BOLD, 16));
+		lblPortfolio.setBackground(Color.WHITE);
+		lblPortfolio.setBounds(343, 449, 151, 26);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblPortfolio);
 	}
 }
