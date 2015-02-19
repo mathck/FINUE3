@@ -1,19 +1,40 @@
 package fin.ue;
 
+
 import java.awt.EventQueue;
+
+import com.opencsv.*;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JButton;
+
 import java.awt.Font;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.SystemColor;
+
 import javax.swing.JSeparator;
+
 import java.awt.Canvas;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
+
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
@@ -23,6 +44,8 @@ public class Main {
 	private JTextField zinssatz;
 	private JTextField result_e;
 	private JTextField result_o;
+	private ArrayList<ArrayList<Double>> stocks = new ArrayList<ArrayList<Double>>();
+	
 
 	/**
 	 * Launch the application.
@@ -65,6 +88,7 @@ public class Main {
 		JList stock_list = new JList();
 		stock_list.setBounds(10, 40, 151, 213);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(stock_list);
+		
 		
 		JLabel lblStocks = new JLabel("Stocks");
 		lblStocks.setBackground(Color.WHITE);
@@ -136,6 +160,37 @@ public class Main {
 		JButton btn_addStock = new JButton("ADD STOCK");
 		btn_addStock.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		btn_addStock.setBounds(10, 264, 151, 37);
+		
+		//ACTIONLISTENER fuer Stocks
+		btn_addStock.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			  {
+				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+				int returnVal = fc.showOpenDialog(frmPortfoliooptimierungMitVerschiedenen);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fc.getSelectedFile();
+					String file = selectedFile.getPath();
+					try {
+						CSVReader reader = new CSVReader(new FileReader(file));
+						String[] nextLine;
+						ArrayList<Double> stock = new ArrayList<Double>();
+						while ((nextLine = reader.readNext()) != null) {
+							if (nextLine != null && !nextLine[6].equals("Adj Close")) {
+								Scanner scanner = new Scanner(nextLine[6]).useLocale(Locale.US);
+								double parse = scanner.nextDouble();
+								stock.add(parse);									
+							}
+						}
+						stocks.add(stock);
+						reader.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			  }
+		});
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(btn_addStock);
 		
 		JSeparator separator_1 = new JSeparator();
