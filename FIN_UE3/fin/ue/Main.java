@@ -185,7 +185,6 @@ public class Main {
 						stocks.add(stock);
 						reader.close();
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -253,5 +252,26 @@ public class Main {
 		lblPortfolio.setBackground(Color.WHITE);
 		lblPortfolio.setBounds(343, 449, 151, 26);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblPortfolio);
+	}
+	
+	public ArrayList<Double> getRenditeList(ArrayList<Double> historical){
+		
+		ArrayList<Double> rendite = new ArrayList<Double>();
+		int next = 1;
+		while(next < historical.size()){
+			double result = (historical.get(next-1) / historical.get(next)) - 1;
+			rendite.add(result);
+			next++;
+		}
+		return rendite;	
+	}
+	
+	public double getRendite(ArrayList<Double> renditeList){
+		double result = 0;
+		for(Double d: renditeList){
+			result += d;
+		}
+		result = result / renditeList.size();
+		return result;
 	}
 }
