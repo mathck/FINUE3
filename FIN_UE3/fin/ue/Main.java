@@ -45,7 +45,6 @@ public class Main {
 	private JTextField result_e;
 	private JTextField result_o;
 	private ArrayList<ArrayList<Double>> stocks = new ArrayList<ArrayList<Double>>();
-	
 
 	/**
 	 * Launch the application.
@@ -76,7 +75,7 @@ public class Main {
 	private void initialize() {
 		frmPortfoliooptimierungMitVerschiedenen = new JFrame();
 		frmPortfoliooptimierungMitVerschiedenen.setResizable(false);
-		frmPortfoliooptimierungMitVerschiedenen.setTitle("Finanzwirtschaft UE - Portfoliooptimierung mit verschiedenen Assetklassen\t\t\t\t\t\t\t\t\t");
+		frmPortfoliooptimierungMitVerschiedenen.setTitle("Finanzwirtschaft UE - Portfoliooptimierung mit verschiedenen Assetklassen");
 		frmPortfoliooptimierungMitVerschiedenen.setBounds(100, 100, 785, 563);
 		frmPortfoliooptimierungMitVerschiedenen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().setLayout(null);
@@ -85,10 +84,10 @@ public class Main {
 		btnAddStock.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(btnAddStock);
 		
-		JList stock_list = new JList();
+		final DefaultListModel model = new DefaultListModel();
+		final JList stock_list = new JList(model);
 		stock_list.setBounds(10, 40, 151, 213);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(stock_list);
-		
 		
 		JLabel lblStocks = new JLabel("Stocks");
 		lblStocks.setBackground(Color.WHITE);
@@ -176,7 +175,7 @@ public class Main {
 						String[] nextLine;
 						ArrayList<Double> stock = new ArrayList<Double>();
 						while ((nextLine = reader.readNext()) != null) {
-							if (nextLine != null && !nextLine[6].equals("Adj Close")) {
+							if (nextLine != null && !nextLine[6].startsWith("Adj Close")) {
 								Scanner scanner = new Scanner(nextLine[6]).useLocale(Locale.US);
 								double parse = scanner.nextDouble();
 								stock.add(parse);									
@@ -185,6 +184,7 @@ public class Main {
 						stocks.add(stock);
 						System.out.println(getStdDev(getRenditeList(stock)));
 						reader.close();
+						model.addElement(selectedFile.getName());
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
