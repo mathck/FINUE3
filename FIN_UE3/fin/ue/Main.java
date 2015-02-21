@@ -44,7 +44,7 @@ public class Main {
 	private JTextField zinssatz;
 	private JTextField result_e;
 	private JTextField result_o;
-	private ArrayList<ArrayList<Double>> stocks = new ArrayList<ArrayList<Double>>();
+	private Portfolio portfolio = new Portfolio();
 
 	/**
 	 * Launch the application.
@@ -181,8 +181,10 @@ public class Main {
 								stock.add(parse);									
 							}
 						}
-						stocks.add(stock);
-						System.out.println(getStdDev(getRenditeList(stock)));
+						Stock currentStock = new Stock(stock);
+						portfolio.AddStock(currentStock);
+						System.out.println(currentStock.GetVolatilitaet());
+						System.out.println(currentStock.GetRendite());
 						reader.close();
 						model.addElement(selectedFile.getName());
 					} catch (IOException e1) {
@@ -253,41 +255,5 @@ public class Main {
 		lblPortfolio.setBackground(Color.WHITE);
 		lblPortfolio.setBounds(343, 449, 151, 26);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblPortfolio);
-	}
-	
-	public ArrayList<Double> getRenditeList(ArrayList<Double> historical){
-		
-		ArrayList<Double> rendite = new ArrayList<Double>();
-		int next = 1;
-		while(next < historical.size()){
-			double result = (historical.get(next-1) / historical.get(next)) - 1;
-			rendite.add(result);
-			next++;
-		}
-		return rendite;	
-	}
-	
-	public double getRendite(ArrayList<Double> renditeList){
-		double result = 0;
-		for(Double d: renditeList){
-			result += d;
-		}
-		result = result / renditeList.size();
-		return result;
-	}
-	
-	public double getStdDev(ArrayList<Double> renditeList){
-		//SOMETHING IS GOING WRONG HERE
-		double stdDev = 0;
-		double sum = 0;
-		int i = 0;
-		while(i < renditeList.size()-1){
-			sum += Math.pow(renditeList.get(i)-((renditeList.get(i)-renditeList.get(i+1)/2)),2.0);
-			System.out.println(sum);
-			i++;
-		}
-		
-		stdDev = Math.sqrt(sum*(1/(double)renditeList.size()));
-		return stdDev;
 	}
 }
