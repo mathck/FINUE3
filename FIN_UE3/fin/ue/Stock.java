@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 public class Stock {
 	private ArrayList<Double> _close;
+	private ArrayList<Double> _renditeList;
 	private Double _erwarteteRendite;
 	private Double _volatilitaet;
 	
 	public Stock(ArrayList<Double> close) {
 		_close = close;
+		_renditeList = getErwarteteList(close);
 		_erwarteteRendite = CalculateErwarteteRendite();
 		_volatilitaet = CalculateVolatilitaet();
+	}
+	
+	public ArrayList<Double> GetRenditeList(){
+		return _renditeList;
 	}
 	
 	public Double GetRendite() {
@@ -58,6 +64,6 @@ public class Stock {
 	}
 	
 	public Double CalculateVolatilitaet() {
-		return getStdDev(getErwarteteList(_close));
+		return getStdDev(_renditeList);
 	}
 }

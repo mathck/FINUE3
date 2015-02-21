@@ -269,7 +269,8 @@ public class Main {
 	private XYDataset createDataset() {
 
         DefaultXYDataset ds = new DefaultXYDataset();
-
+        //Um Arraylists in Arrays umzuwandeln 
+        //Integer[] bar = foo.toArray(new Integer[foo.size()]);
         double[][] data = { {0.1, 0.2, 0.3}, {1, 2, 3} };
 
         ds.addSeries("series1", data);
