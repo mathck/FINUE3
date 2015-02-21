@@ -47,21 +47,17 @@ public class Stock {
 	}
 	
 	private double getStdDev(ArrayList<Double> renditeList){
-		//SOMETHING IS GOING WRONG HERE
 		double stdDev = 0;
 		double sum = 0;
-		int i = 0;
-		while(i < renditeList.size()-1){
-			sum += Math.pow(renditeList.get(i)-((renditeList.get(i)-renditeList.get(i+1)/2)),2.0);
-			System.out.println(sum);
-			i++;
+		for(Double d: renditeList){
+			sum += Math.pow(d-_erwarteteRendite, 2);
 		}
 		
-		stdDev = Math.sqrt(sum*(1/(double)renditeList.size()));
+		stdDev = Math.sqrt(sum/(renditeList.size()-1));
 		return stdDev;
 	}
 	
 	public Double CalculateVolatilitaet() {
-		return getStdDev(_close);
+		return getStdDev(getErwarteteList(_close));
 	}
 }
