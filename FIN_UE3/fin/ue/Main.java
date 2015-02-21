@@ -38,6 +38,13 @@ import java.util.Scanner;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataset;
+
 public class Main {
 
 	private JFrame frmPortfoliooptimierungMitVerschiedenen;
@@ -209,10 +216,13 @@ public class Main {
 		button_start.setBounds(182, 451, 151, 74);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(button_start);
 		
-		Canvas canvas = new Canvas();
-		canvas.setBackground(SystemColor.inactiveCaption);
-		canvas.setBounds(183, 9, 585, 434);
-		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(canvas);
+		XYDataset ds = createDataset();
+		JFreeChart chart = ChartFactory.createXYLineChart("Test Chart",
+							"x", "y", ds, PlotOrientation.VERTICAL, true, true,
+							false);
+		ChartPanel cp = new ChartPanel(chart);
+		cp.setBounds(183, 9, 585, 434);
+		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(cp);
 		
 		JLabel lblErwartetePortfoliorendite = new JLabel("Erwartete Portfoliorendite");
 		lblErwartetePortfoliorendite.setHorizontalAlignment(SwingConstants.LEFT);
@@ -256,4 +266,14 @@ public class Main {
 		lblPortfolio.setBounds(343, 449, 151, 26);
 		frmPortfoliooptimierungMitVerschiedenen.getContentPane().add(lblPortfolio);
 	}
+	private XYDataset createDataset() {
+
+        DefaultXYDataset ds = new DefaultXYDataset();
+
+        double[][] data = { {0.1, 0.2, 0.3}, {1, 2, 3} };
+
+        ds.addSeries("series1", data);
+
+        return ds;
+    }
 }
