@@ -12,6 +12,8 @@ import org.jfree.data.xy.XYDataset;
 
 public class Portfolio {
 	private ArrayList<Stock> _stocks;
+	private ArrayList<Double> _rendite;
+	private ArrayList<Double> _vola;
 	private Double _zinssatz;
 	private int _stockGewichtung;
 	private Double _gewichtungsSchritte = 0.01d;
@@ -123,7 +125,7 @@ public class Portfolio {
 		catch(Exception e) {
 			throw new InvalidAlgorithmParameterException();
 		}
-		
+		_vola = result;
 		return getDoubles(result.toArray(new Double[result.size()]));
 	}
 	
@@ -148,7 +150,7 @@ public class Portfolio {
 		catch(Exception e) {
 			throw new InvalidAlgorithmParameterException();
 		}
-		
+		_rendite = result;
 		return getDoubles(result.toArray(new Double[result.size()]));
 	}
 	
@@ -162,11 +164,58 @@ public class Portfolio {
         double[][] data = { GetVolatilitaetArray(), GetErwarteteRenditeArray() };
 
         ds.addSeries("Portfolio", data);
-
+        ds.addSeries("Tobin", GetTobinData());
         return ds;
     }
 	
 	double[] getDoubles(Double[] data) {
 	    return ArrayUtils.toPrimitive(data);
+	}
+	
+	public double GetTobinGewichtung() throws InvalidAlgorithmParameterException{
+		 ArrayList<Double> steigung = new ArrayList<Double>();
+		 double x0 = 0;
+		 double y0 = _zinssatz / 10;
+		 
+		 for(int i = 0; i < _vola.size(); i++){
+			 double x1 = ((1-_stockGewichtung) * (y0)) + (_stockGewichtung * _vola.get(i));
+			 double y1 = _stockGewichtung * _rendite.get(i);
+			 steigung.add((y1-y0)/(x1-x0));
+			 System.out.println((y1-y0)/(x1-x0));
+		 }
+		 
+		 int maxIndex = steigung.indexOf(Collections.max(steigung));
+		 System.out.println(maxIndex* _gewichtungsSchritte);
+		 return  maxIndex * _gewichtungsSchritte;
+	}
+	
+	public double[][] GetTobinData() throws InvalidAlgorithmParameterException{
+		ArrayList<Double> renData = new ArrayList<Double>();
+		ArrayList<Double> volData = new ArrayList<Double>();
+		
+		double gewichtung_stock1 = GetTobinGewichtung();
+		double gewichtung_stock2 = 1 - gewichtung_stock1;
+		
+		double stock1_rendite = _stocks.get(0).CalculateErwarteteRendite();
+		double stock2_rendite = _stocks.get(1).CalculateErwarteteRendite();
+		double rendite = gewichtung_stock1*stock1_rendite + gewichtung_stock2*stock2_rendite;
+		
+		double stock1_vola = _stocks.get(0).CalculateVolatilitaet();
+		double stock2_vola = _stocks.get(1).CalculateVolatilitaet();
+		double korr = CalculateKorr(_stocks.get(0), _stocks.get(1));
+		
+		double vola = Math.sqrt(	Math.pow(gewichtung_stock1, 2) * Math.pow(stock1_vola, 2) + 
+				Math.pow(gewichtung_stock2, 2) * Math.pow(stock2_vola, 2) +
+				2 * gewichtung_stock1 * gewichtung_stock2 * stock1_vola * stock2_vola * korr);
+		
+		double pGewichtung = 0;
+		double gewichtungsSchritte = 0.001;
+		while(pGewichtung <= 0.05){
+			renData.add((_zinssatz/100) + ((rendite-(_zinssatz/100))/ (vola)) * pGewichtung);
+			volData.add(pGewichtung);
+			pGewichtung += gewichtungsSchritte;
+		}
+		double[][] data = { getDoubles(volData.toArray(new Double[volData.size()])), getDoubles(renData.toArray(new Double[renData.size()]))};
+		return data;
 	}
 }
