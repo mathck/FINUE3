@@ -58,6 +58,8 @@ public class Main {
 	private JTextField result_o;
 	private Portfolio portfolio = new Portfolio();
 	private ChartPanel cp;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -234,6 +236,7 @@ public class Main {
 				}
 			  }
 		});
+		
 		mainWindow.getContentPane().add(btn_addStock);
 		
 		JSeparator separator_1 = new JSeparator();
@@ -266,23 +269,23 @@ public class Main {
 		button_start.setBounds(182, 451, 151, 74);
 		mainWindow.getContentPane().add(button_start);
 					
-		JLabel lblErwartetePortfoliorendite = new JLabel("Erwartete Portfoliorendite");
+		JLabel lblErwartetePortfoliorendite = new JLabel("Erwartete Rendite");
 		lblErwartetePortfoliorendite.setHorizontalAlignment(SwingConstants.LEFT);
 		lblErwartetePortfoliorendite.setFont(new Font("Open Sans", Font.PLAIN, 13));
-		lblErwartetePortfoliorendite.setBounds(343, 478, 157, 20);
+		lblErwartetePortfoliorendite.setBounds(343, 478, 115, 20);
 		mainWindow.getContentPane().add(lblErwartetePortfoliorendite);
 		
 		result_e = new JTextField();
 		result_e.setEditable(false);
 		result_e.setHorizontalAlignment(SwingConstants.CENTER);
 		result_e.setColumns(10);
-		result_e.setBounds(509, 478, 253, 20);
+		result_e.setBounds(460, 478, 86, 20);
 		mainWindow.getContentPane().add(result_e);
 		
-		JLabel lblPortfolioVolatilitt = new JLabel("Portfolio Volatilit\u00E4t");
+		JLabel lblPortfolioVolatilitt = new JLabel("Volatilit\u00E4t");
 		lblPortfolioVolatilitt.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPortfolioVolatilitt.setFont(new Font("Open Sans", Font.PLAIN, 13));
-		lblPortfolioVolatilitt.setBounds(343, 503, 157, 20);
+		lblPortfolioVolatilitt.setBounds(343, 503, 115, 20);
 		mainWindow.getContentPane().add(lblPortfolioVolatilitt);
 		
 		gewichtung_slider.addChangeListener(new ChangeListener() {
@@ -298,7 +301,7 @@ public class Main {
 		result_o.setHorizontalAlignment(SwingConstants.CENTER);
 		result_o.setEditable(false);
 		result_o.setColumns(10);
-		result_o.setBounds(509, 503, 253, 20);
+		result_o.setBounds(460, 502, 86, 20);
 		mainWindow.getContentPane().add(result_o);
 		
 		JLabel lblPortfolio = new JLabel("MVP Portfolio");
@@ -308,6 +311,48 @@ public class Main {
 		lblPortfolio.setBackground(Color.WHITE);
 		lblPortfolio.setBounds(343, 449, 151, 26);
 		mainWindow.getContentPane().add(lblPortfolio);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		separator_3.setBounds(558, 449, 11, 86);
+		mainWindow.getContentPane().add(separator_3);
+		
+		JLabel lblCashStock = new JLabel("Cash + Stock");
+		lblCashStock.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCashStock.setForeground(SystemColor.textHighlight);
+		lblCashStock.setFont(new Font("Open Sans", Font.BOLD, 16));
+		lblCashStock.setBackground(Color.WHITE);
+		lblCashStock.setBounds(568, 450, 151, 26);
+		mainWindow.getContentPane().add(lblCashStock);
+		
+		JLabel lblA = new JLabel("a");
+		lblA.setHorizontalAlignment(SwingConstants.LEFT);
+		lblA.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		lblA.setBounds(568, 479, 105, 20);
+		mainWindow.getContentPane().add(lblA);
+		
+		JLabel lblB = new JLabel("b");
+		lblB.setHorizontalAlignment(SwingConstants.LEFT);
+		lblB.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		lblB.setBounds(568, 504, 105, 20);
+		mainWindow.getContentPane().add(lblB);
+		
+		textField = new JTextField();
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setEditable(false);
+		textField.setColumns(10);
+		textField.setBounds(685, 503, 86, 20);
+		mainWindow.getContentPane().add(textField);
+		
+		textField_1 = new JTextField();
+		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
+		textField_1.setEditable(false);
+		textField_1.setColumns(10);
+		textField_1.setBounds(685, 479, 86, 20);
+		mainWindow.getContentPane().add(textField_1);
+		
+		AutoImportCSVsFromDesktop(model);
+		DrawChartAndResults();
 	}
 	
 	private void DrawChartAndResults() {
@@ -334,5 +379,39 @@ public class Main {
 				    "Error",
 				    JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	private void AutoImportCSVsFromDesktop(DefaultListModel model) {
+		ArrayList<File> csvStocks = new ArrayList<File>();
+		File dektop = new File(System.getProperty("user.home") + "/Desktop");
+		File[] listOfFiles = dektop.listFiles();
+
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	      if (listOfFiles[i].isFile() && listOfFiles[i].getName().endsWith(".csv")) {
+	    	  csvStocks.add(listOfFiles[i]);
+	      }
+	    }
+	    
+	    for(File csv : csvStocks) {
+	    	String file = csv.getPath();
+			try {
+				CSVReader reader = new CSVReader(new FileReader(file));
+				String[] nextLine;
+				ArrayList<Double> stock = new ArrayList<Double>();
+				while ((nextLine = reader.readNext()) != null) {
+					if (nextLine != null && !nextLine[6].startsWith("Adj Close")) {
+						Scanner scanner = new Scanner(nextLine[6]).useLocale(Locale.US);
+						double parse = scanner.nextDouble();
+						stock.add(parse);									
+					}
+				}
+				Stock currentStock = new Stock(stock);
+				portfolio.AddStock(currentStock);
+				reader.close();
+				model.addElement(csv.getName());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+	    }
 	}
 }

@@ -93,7 +93,7 @@ public class Portfolio {
 			sum3 += Math.pow(stock2.GetRenditeList().get(i)-stock2.GetRendite(),2.0);
 		}
 		result = sum1 / Math.sqrt(sum2*sum3);
-		System.out.println(result);
+		//System.out.println(result);
 		
 		return result;
 		
