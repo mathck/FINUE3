@@ -164,6 +164,7 @@ public class Portfolio {
         double[][] data = { GetVolatilitaetArray(), GetErwarteteRenditeArray() };
         
         ds.addSeries("Tobin", GetTobinData());
+        ds.addSeries("MVP", GetMVPData());
         ds.addSeries("Portfolio", data);
         return ds;
     }
@@ -186,6 +187,15 @@ public class Portfolio {
 		 int maxIndex = steigung.indexOf(Collections.max(steigung));
 		 double[] data1 = {_vola.get(maxIndex).doubleValue()};
 		 double[] data2 = {_rendite.get(maxIndex).doubleValue()};
+		 double[][] data = {data1,data2};
+		 
+		 return data;
+
+	}
+	
+	public double[][] GetMVPData() throws InvalidAlgorithmParameterException{
+		 double[] data1 = {GetMVPVola()/100};
+		 double[] data2 = {GetMVPRendite()/100};
 		 double[][] data = {data1,data2};
 		 
 		 return data;

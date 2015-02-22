@@ -56,6 +56,10 @@ public class Main {
 	private JTextField zinssatz;
 	private JTextField result_e;
 	private JTextField result_o;
+	
+	private JTextField result_cash_e;
+	private JTextField result_cash_o;
+	
 	private Portfolio portfolio = new Portfolio();
 	private ChartPanel cp;
 	private JTextField textField;
@@ -90,7 +94,7 @@ public class Main {
 	private void initialize() {
 		mainWindow = new JFrame();
 		mainWindow.setResizable(false);
-		mainWindow.setTitle("Finanzwirtschaft UE - Portfoliooptimierung mit verschiedenen Assetklassen");
+		mainWindow.setTitle("Finanzwirtschaft UE - Portfoliooptimierung mit verschiedenen Assetklassen (Czernecki, Mermi)");
 		mainWindow.setBounds(100, 100, 785, 563);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.getContentPane().setLayout(null);
@@ -114,6 +118,7 @@ public class Main {
 		
 		final JSlider gewichtung_slider = new JSlider();
 		gewichtung_slider.setBounds(10, 449, 151, 26);
+		portfolio.SetStockGewichtung(50);
 		mainWindow.getContentPane().add(gewichtung_slider);
 		
 		JLabel lblGewichtung = new JLabel("Gewichtung");
@@ -154,7 +159,7 @@ public class Main {
 		zinssatz.setBounds(10, 372, 151, 20);
 		mainWindow.getContentPane().add(zinssatz);
 		zinssatz.setColumns(10);
-		zinssatz.setText("0.05");
+		zinssatz.setText("0.0001369863");
 		
 		zinssatz.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
@@ -325,31 +330,31 @@ public class Main {
 		lblCashStock.setBounds(568, 450, 151, 26);
 		mainWindow.getContentPane().add(lblCashStock);
 		
-		JLabel lblA = new JLabel("a");
+		JLabel lblA = new JLabel("Erwartete Rendite");
 		lblA.setHorizontalAlignment(SwingConstants.LEFT);
 		lblA.setFont(new Font("Open Sans", Font.PLAIN, 13));
 		lblA.setBounds(568, 479, 105, 20);
 		mainWindow.getContentPane().add(lblA);
 		
-		JLabel lblB = new JLabel("b");
+		JLabel lblB = new JLabel("Volatilität");
 		lblB.setHorizontalAlignment(SwingConstants.LEFT);
 		lblB.setFont(new Font("Open Sans", Font.PLAIN, 13));
 		lblB.setBounds(568, 504, 105, 20);
 		mainWindow.getContentPane().add(lblB);
 		
-		textField = new JTextField();
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setEditable(false);
-		textField.setColumns(10);
-		textField.setBounds(685, 503, 86, 20);
-		mainWindow.getContentPane().add(textField);
+		result_cash_o = new JTextField();
+		result_cash_o.setHorizontalAlignment(SwingConstants.CENTER);
+		result_cash_o.setEditable(false);
+		result_cash_o.setColumns(10);
+		result_cash_o.setBounds(685, 503, 86, 20);
+		mainWindow.getContentPane().add(result_cash_o);
 		
-		textField_1 = new JTextField();
-		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_1.setEditable(false);
-		textField_1.setColumns(10);
-		textField_1.setBounds(685, 479, 86, 20);
-		mainWindow.getContentPane().add(textField_1);
+		result_cash_e = new JTextField();
+		result_cash_e.setHorizontalAlignment(SwingConstants.CENTER);
+		result_cash_e.setEditable(false);
+		result_cash_e.setColumns(10);
+		result_cash_e.setBounds(685, 479, 86, 20);
+		mainWindow.getContentPane().add(result_cash_e);
 		
 		AutoImportCSVsFromDesktop(model);
 		DrawChartAndResults();
@@ -369,6 +374,9 @@ public class Main {
 			
 			result_o.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetMVPVola())) + "%");
 			result_e.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetMVPRendite())) + "%");
+			
+			result_cash_o.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetTobinData()[0][0] * 100)) + "%");
+			result_cash_e.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetTobinData()[1][0] * 100)) + "%");
 			
 			mainWindow.revalidate();
 			mainWindow.repaint();
