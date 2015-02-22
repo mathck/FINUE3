@@ -160,10 +160,8 @@ public class Portfolio {
         //Integer[] bar = foo.toArray(new Integer[foo.size()]);
         
         double[][] data = { GetVolatilitaetArray(), GetErwarteteRenditeArray() };
-        
-        
+
         ds.addSeries("Portfolio", data);
-        ds.addSeries("Tobin", GetTobinDataArray());
 
         return ds;
     }
@@ -171,23 +169,4 @@ public class Portfolio {
 	double[] getDoubles(Double[] data) {
 	    return ArrayUtils.toPrimitive(data);
 	}
-	
-	public double[][] GetTobinDataArray() throws InvalidAlgorithmParameterException{
-		ArrayList<Double> renData = new ArrayList<Double>();
-		ArrayList<Double> volData = new ArrayList<Double>();
-		
- 		double gewichtung = 0;
- 		double gewichtungsSchritte = 0.0001;
-		
-		while(gewichtung <= 0.05){
-			renData.add(_zinssatz + ((GetMVPRendite()-_zinssatz)/ GetMVPVola()) * gewichtung);
-			volData.add(gewichtung);
-			gewichtung += gewichtungsSchritte;
-		}
-		
-		double[][] data = { getDoubles(volData.toArray(new Double[volData.size()])), getDoubles(renData.toArray(new Double[renData.size()]))};
-		
-		return data;
-	}
-	
 }
