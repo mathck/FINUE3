@@ -162,9 +162,9 @@ public class Portfolio {
         //Integer[] bar = foo.toArray(new Integer[foo.size()]);
         
         double[][] data = { GetVolatilitaetArray(), GetErwarteteRenditeArray() };
-
-        ds.addSeries("Portfolio", data);
+        
         ds.addSeries("Tobin", GetTobinData());
+        ds.addSeries("Portfolio", data);
         return ds;
     }
 	
@@ -172,24 +172,40 @@ public class Portfolio {
 	    return ArrayUtils.toPrimitive(data);
 	}
 	
-	public double GetTobinGewichtung() throws InvalidAlgorithmParameterException{
+	public double[][] GetTobinData() throws InvalidAlgorithmParameterException{
 		 ArrayList<Double> steigung = new ArrayList<Double>();
 		 double x0 = 0;
-		 double y0 = _zinssatz / 10;
+		 double y0 = _zinssatz/10;
 		 
 		 for(int i = 0; i < _vola.size(); i++){
 			 double x1 = ((1-_stockGewichtung) * (y0)) + (_stockGewichtung * _vola.get(i));
 			 double y1 = _stockGewichtung * _rendite.get(i);
 			 steigung.add((y1-y0)/(x1-x0));
-			 System.out.println((y1-y0)/(x1-x0));
 		 }
 		 
 		 int maxIndex = steigung.indexOf(Collections.max(steigung));
-		 System.out.println(maxIndex* _gewichtungsSchritte);
-		 return  maxIndex * _gewichtungsSchritte;
+		 double[] data1 = {_vola.get(maxIndex).doubleValue()};
+		 double[] data2 = {_rendite.get(maxIndex).doubleValue()};
+		 double[][] data = {data1,data2};
+		 
+		 return data;
+
 	}
 	
-	public double[][] GetTobinData() throws InvalidAlgorithmParameterException{
+	public double[][] GetTobinData1() throws InvalidAlgorithmParameterException{
+		return null;
+		
+		/*ArrayList<Double> yData = new ArrayList<Double>();
+		ArrayList<Double> xData = new ArrayList<Double>();
+		double steigung = GetTobinSteigung();
+		
+		for(double i = 0; i < Collections.max(_vola) * 1.1; i+=0.00005){
+			xData.add(i);
+			yData.add(i*steigung + _zinssatz);
+		}
+		
+		double[][] data = {getDoubles(xData.toArray(new Double[xData.size()])), getDoubles(yData.toArray(new Double[yData.size()]))};
+		return data;
 		ArrayList<Double> renData = new ArrayList<Double>();
 		ArrayList<Double> volData = new ArrayList<Double>();
 		
@@ -211,11 +227,12 @@ public class Portfolio {
 		double pGewichtung = 0;
 		double gewichtungsSchritte = 0.001;
 		while(pGewichtung <= 0.05){
-			renData.add((_zinssatz/100) + ((rendite-(_zinssatz/100))/ (vola)) * pGewichtung);
+			renData.add((_zinssatz/100) + ((rendite-(_zinssatz/100))/ (vola) * pGewichtung));
 			volData.add(pGewichtung);
 			pGewichtung += gewichtungsSchritte;
 		}
 		double[][] data = { getDoubles(volData.toArray(new Double[volData.size()])), getDoubles(renData.toArray(new Double[renData.size()]))};
 		return data;
+		*/
 	}
 }
