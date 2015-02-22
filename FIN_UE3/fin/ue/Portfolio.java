@@ -13,11 +13,20 @@ import org.jfree.data.xy.XYDataset;
 public class Portfolio {
 	private ArrayList<Stock> _stocks;
 	private Double _zinssatz;
+	private int _stockGewichtung;
 	private Double _gewichtungsSchritte = 0.05d;
 	
 	public Portfolio() {
 		_stocks = new ArrayList<Stock>();
 		_zinssatz = 0d;
+	}
+	
+	public void SetStockGewichtung(int gewichtung) {
+		_stockGewichtung = gewichtung;
+	}
+	
+	public void SetZinssatz(double zinssatz) {
+		_zinssatz = zinssatz;
 	}
 	
 	public void AddStock(Stock newStock) {

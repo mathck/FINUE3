@@ -39,6 +39,8 @@ import java.util.Scanner;
 
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -149,6 +151,34 @@ public class Main {
 		zinssatz.setBounds(10, 372, 151, 20);
 		mainWindow.getContentPane().add(zinssatz);
 		zinssatz.setColumns(10);
+		zinssatz.setText("0.05");
+		
+		zinssatz.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				  performActions();
+				  }
+
+			public void insertUpdate(DocumentEvent arg0) {
+				performActions();
+			}
+
+			public void removeUpdate(DocumentEvent arg0) {
+				performActions();
+			}
+			
+			private void performActions() {
+				try {
+				    portfolio.SetZinssatz(Double.parseDouble(zinssatz.getText()));
+				  }
+				  catch(Exception ex) {
+					  portfolio.SetZinssatz(0.05d);
+					  JOptionPane.showMessageDialog(mainWindow,
+							    "Zinssatz must be a number",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE);
+				  }
+			}
+				});
 		
 		JSeparator separator = new JSeparator();
 		separator.setBounds(0, 309, 171, 17);
@@ -258,6 +288,7 @@ public class Main {
 			public void stateChanged(ChangeEvent arg0) {
 				int value = gewichtung_slider.getValue();
 				gewichtung_stock.setText(value + "%");
+				portfolio.SetStockGewichtung(value);
 				gewichtung_cash.setText(((value - 100) * -1) + "%");
 			}
 		});
