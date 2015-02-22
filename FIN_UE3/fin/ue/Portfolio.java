@@ -14,7 +14,7 @@ public class Portfolio {
 	private ArrayList<Stock> _stocks;
 	private Double _zinssatz;
 	private int _stockGewichtung;
-	private Double _gewichtungsSchritte = 0.05d;
+	private Double _gewichtungsSchritte = 0.01d;
 	
 	public Portfolio() {
 		_stocks = new ArrayList<Stock>();
@@ -27,6 +27,14 @@ public class Portfolio {
 	
 	public void SetZinssatz(double zinssatz) {
 		_zinssatz = zinssatz;
+	}
+	
+	public double CashAndStockErwartungswert() {
+		double result = 0;
+		
+		int cashGewichtung = 1 - _stockGewichtung;
+		
+		return result;
 	}
 	
 	public void AddStock(Stock newStock) {
@@ -51,15 +59,26 @@ public class Portfolio {
 		return null;
 	}
 	
-	public double GetMVP() throws InvalidAlgorithmParameterException {
+	public double GetMVPVola() throws InvalidAlgorithmParameterException {
 		// ist einfach der kleinste Wert für die Volatilität in der Grafik
-		return minIndex(GetVolatilitaetArray());
+		return min(GetVolatilitaetArray()) * 100;
+	}
+	
+	public double GetMVPRendite() throws InvalidAlgorithmParameterException {
+		// ist einfach der kleinste Wert für die Volatilität in der Grafik
+		return GetErwarteteRenditeArray()[(int) minIndex(GetVolatilitaetArray())] * 100;
+	}
+	
+	private double min(double[] array)
+	{
+		List<Double> list = Arrays.asList(ArrayUtils.toObject(array));
+        return Collections.min(list);
 	}
 	
 	private double minIndex(double[] array)
 	{
 		List<Double> list = Arrays.asList(ArrayUtils.toObject(array));
-        return Collections.min(list);
+        return list.indexOf(Collections.min(list));
 	}
 	
 	public Double CalculateKorr(Stock stock1, Stock stock2){

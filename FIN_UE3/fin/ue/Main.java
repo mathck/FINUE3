@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -205,7 +206,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e)
 			  {
 				final JFileChooser fc = new JFileChooser();
-				fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+				fc.setCurrentDirectory(new File(System.getProperty("user.home") + "/Desktop"));
 				int returnVal = fc.showOpenDialog(mainWindow);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fc.getSelectedFile();
@@ -223,8 +224,8 @@ public class Main {
 						}
 						Stock currentStock = new Stock(stock);
 						portfolio.AddStock(currentStock);
-						System.out.println(currentStock.GetVolatilitaet());
-						System.out.println(currentStock.GetRendite());
+						//System.out.println(currentStock.GetVolatilitaet());
+						//System.out.println(currentStock.GetRendite());
 						reader.close();
 						model.addElement(selectedFile.getName());
 					} catch (IOException e1) {
@@ -257,7 +258,7 @@ public class Main {
 					mainWindow.repaint();
 				}
 				
-				DrawChart();
+				DrawChartAndResults();
 			}
 		});
 		
@@ -300,7 +301,7 @@ public class Main {
 		result_o.setBounds(509, 503, 253, 20);
 		mainWindow.getContentPane().add(result_o);
 		
-		JLabel lblPortfolio = new JLabel("Portfolio");
+		JLabel lblPortfolio = new JLabel("MVP Portfolio");
 		lblPortfolio.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPortfolio.setForeground(SystemColor.textHighlight);
 		lblPortfolio.setFont(new Font("Open Sans", Font.BOLD, 16));
@@ -309,7 +310,7 @@ public class Main {
 		mainWindow.getContentPane().add(lblPortfolio);
 	}
 	
-	private void DrawChart() {
+	private void DrawChartAndResults() {
 		XYDataset ds = null;
 		
 		try {
@@ -320,6 +321,12 @@ public class Main {
 			cp = new ChartPanel(chart);
 			cp.setBounds(183, 9, 585, 434);
 			mainWindow.getContentPane().add(cp);
+			
+			result_o.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetMVPVola())) + "%");
+			result_e.setText(String.valueOf(new DecimalFormat("#.##").format(portfolio.GetMVPRendite())) + "%");
+			
+			mainWindow.revalidate();
+			mainWindow.repaint();
 		}
 		catch(InvalidAlgorithmParameterException e) {
 			JOptionPane.showMessageDialog(mainWindow,
