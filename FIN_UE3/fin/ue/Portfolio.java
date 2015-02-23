@@ -187,7 +187,7 @@ public class Portfolio {
 		 int maxIndex = steigung.indexOf(Collections.max(steigung));
 		 double[] data1 = {_vola.get(maxIndex).doubleValue()};
 		 double[] data2 = {_rendite.get(maxIndex).doubleValue()};
-		 double[][] data = {data1,data2};
+		 double[][] data = new double[][]{data1,data2};
 		 
 		 return data;
 
@@ -202,8 +202,19 @@ public class Portfolio {
 
 	}
 	
-	public double[][] GetTobinData1() throws InvalidAlgorithmParameterException{
-		return null;
+	public double GetTobinGewichtung() throws InvalidAlgorithmParameterException{
+		ArrayList<Double> steigung = new ArrayList<Double>();
+		 double x0 = 0;
+		 double y0 = _zinssatz/10;
+		 
+		 for(int i = 0; i < _vola.size(); i++){
+			 double x1 = ((1-_stockGewichtung) * (y0)) + (_stockGewichtung * _vola.get(i));
+			 double y1 = _stockGewichtung * _rendite.get(i);
+			 steigung.add((y1-y0)/(x1-x0));
+		 }
+		 
+		int maxIndex = steigung.indexOf(Collections.max(steigung));
+		return maxIndex * _gewichtungsSchritte;
 		
 		/*ArrayList<Double> yData = new ArrayList<Double>();
 		ArrayList<Double> xData = new ArrayList<Double>();

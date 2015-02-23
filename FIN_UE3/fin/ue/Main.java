@@ -45,7 +45,10 @@ import javax.swing.event.DocumentListener;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYShapeAnnotation;
+import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 
@@ -367,6 +370,13 @@ public class Main {
 			JFreeChart chart = ChartFactory.createScatterPlot("Mittelwert-Varianz-Diagramm",
 					"Volatilität", "Erwartungswert", ds, PlotOrientation.VERTICAL, true, true,
 					false);
+			XYTextAnnotation anno = new XYTextAnnotation("A:" + (int)(portfolio.GetTobinGewichtung() * 100) + "%"+
+														" B:"+ (int)((1-portfolio.GetTobinGewichtung())*100)+"%", 
+														portfolio.GetTobinData()[0][0]*1.1, portfolio.GetTobinData()[1][0]);
+		
+			
+			XYPlot plot= chart.getXYPlot();
+			plot.addAnnotation(anno);
 			cp = new ChartPanel(chart);
 			cp.setBounds(183, 9, 585, 434);
 			mainWindow.getContentPane().add(cp);
