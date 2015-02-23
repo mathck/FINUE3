@@ -20,7 +20,7 @@ public class Portfolio {
 	
 	public Portfolio() {
 		_stocks = new ArrayList<Stock>();
-		_zinssatz = 0d;
+		_zinssatz = 0.3d;
 	}
 	
 	public void SetStockGewichtung(int gewichtung) {

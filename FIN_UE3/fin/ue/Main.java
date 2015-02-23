@@ -150,7 +150,7 @@ public class Main {
 		lblCash_1.setBounds(11, 320, 151, 29);
 		mainWindow.getContentPane().add(lblCash_1);
 		
-		JLabel lblZinssatz = new JLabel("Zinssatz (%)");
+		JLabel lblZinssatz = new JLabel("Zinssatz (0 - 1)");
 		lblZinssatz.setHorizontalAlignment(SwingConstants.LEFT);
 		lblZinssatz.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		lblZinssatz.setBounds(10, 352, 151, 17);
@@ -159,9 +159,8 @@ public class Main {
 		zinssatz = new JTextField();
 		zinssatz.setHorizontalAlignment(SwingConstants.CENTER);
 		zinssatz.setBounds(10, 372, 151, 20);
+		zinssatz.setText("0.03");
 		mainWindow.getContentPane().add(zinssatz);
-		zinssatz.setColumns(10);
-		zinssatz.setText("0.0001369863");
 		
 		zinssatz.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
@@ -178,10 +177,10 @@ public class Main {
 			
 			private void performActions() {
 				try {
-				    portfolio.SetZinssatz(Double.parseDouble(zinssatz.getText()));
+				    portfolio.SetZinssatz(Double.parseDouble(zinssatz.getText())*10);
 				  }
 				  catch(Exception ex) {
-					  portfolio.SetZinssatz(0.05d);
+					  portfolio.SetZinssatz(0.03d);
 					  JOptionPane.showMessageDialog(mainWindow,
 							    "Zinssatz must be a number",
 							    "Error",
