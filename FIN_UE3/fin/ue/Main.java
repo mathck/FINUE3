@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import java.awt.Font;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
